@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nana Maidala's Candy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── RESET & VARIABLES ─────────────────────────────── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --gold:   #c8922a;
+      --gold2:  #e8b84b;
+      --brown:  #5a2d0c;
+      --cream:  #fdf6ec;
+      --warm:   #f5e6cc;
+      --dark:   #2b1406;
+      --green:  #25d366;
+      --radius: 14px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Lato', sans-serif;
+      background: var(--cream);
+      color: var(--dark);
+      overflow-x: hidden;
+    }
+
+    /* ─── SPLASH SCREEN ─────────────────────────────────── */
+    #splash {
+      position: fixed;
+      inset: 0;
+      background: var(--brown);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.7s ease, visibility 0.7s ease;
+    }
+
+    #splash.hide {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .splash-candy-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .candy-dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--gold2);
+      animation: bounce 0.9s infinite alternate;
+    }
+
+    .candy-dot:nth-child(2) { animation-delay: 0.15s; background: #e07b39; }
+    .candy-dot:nth-child(3) { animation-delay: 0.3s;  background: var(--gold2); }
+    .candy-dot:nth-child(4) { animation-delay: 0.45s; background: #e07b39; }
+    .candy-dot:nth-child(5) { animation-delay: 0.6s;  background: var(--gold2); }
+
+    @keyframes bounce {
+      from { transform: translateY(0);    opacity: 0.6; }
+      to   { transform: translateY(-22px); opacity: 1;   }
+    }
+
+    .splash-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 7vw, 3.6rem);
+      color: var(--gold2);
+      text-align: center;
+      line-height: 1.2;
+      letter-spacing: 1px;
+      animation: fadeUp 1s ease both;
+    }
+
+    .splash-sub {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 0.95rem;
+      color: var(--warm);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-top: 10px;
+      animation: fadeUp 1.2s ease both;
+    }
+
+    .splash-bar {
+      width: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--gold), var(--gold2));
+      border-radius: 2px;
+      margin-top: 28px;
+      animation: loadBar 2.2s ease forwards;
+    }
+
+    @keyframes loadBar {
+      to { width: 220px; }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── NAVBAR ────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: rgba(42, 20, 6, 0.96);
+      backdrop-filter: blur(8px);
+      padding: 14px 6%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 100;
+      border-bottom: 1px solid rgba(200,146,42,0.25);
+    }
+
+    .nav-brand {
+      font-family: 'Playfair Display', serif;
+      color: var(--gold2);
+      font-size: 1.25rem;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--warm);
+      text-decoration: none;
+      font-size: 0.88rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover { color: var(--gold2); }
+
+    /* ─── HERO ──────────────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      background:
+        linear-gradient(160deg, rgba(42,20,6,0.85) 0%, rgba(90,45,12,0.7) 100%),
+        url('https://images.unsplash.com/photo-1571506165871-ee72a35bc9d4?w=1400&auto=format&fit=crop')
+        center/cover no-repeat;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 6% 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 60%, rgba(200,146,42,0.15), transparent);
+    }
+
+    .hero-tag {
+      font-size: 0.78rem;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--gold2);
+      margin-bottom: 16px;
+      opacity: 0;
+      animation: fadeUp 0.8s 2.8s ease forwards;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.6rem, 8vw, 5.5rem);
+      color: #fff;
+      line-height: 1.1;
+      opacity: 0;
+      animation: fadeUp 0.9s 3s ease forwards;
+    }
+
+    .hero-title span {
+      color: var(--gold2);
+      font-style: italic;
+    }
+
+    .hero-motto {
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      color: var(--warm);
+      font-weight: 300;
+      font-style: italic;
+      margin-top: 16px;
+      max-width: 520px;
+      line-height: 1.6;
+      opacity: 0;
+      animation: fadeUp 1s 3.2s ease forwards;
+    }
+
+    .hero-cta-row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 40px;
+      opacity: 0;
+      animation: fadeUp 1s 3.4s ease forwards;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gold), var(--gold2));
+      color: var(--dark);
+      font-weight: 700;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      padding: 14px 34px;
+      border-radius: 50px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.25s, box-shadow 0.25s;
+      box-shadow: 0 4px 20px rgba(200,146,42,0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(200,146,42,0.55);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: #fff;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      padding: 14px 34px;
+      border-radius: 50px;
+      text-decoration: none;
+      border: 1.5px solid rgba(255,255,255,0.45);
+      cursor: pointer;
+      transition: background 0.25s, border-color 0.25s;
+    }
+
+    .btn-outline:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: var(--gold2);
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      opacity: 0;
+      animation: fadeUp 1s 3.8s ease forwards;
+    }
+
+    .scroll-hint span {
+      font-size: 0.7rem;
+      letter-spacing: 3px;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+    }
+
+    .scroll-arrow {
+      width: 20px;
+      height: 20px;
+      border-right: 2px solid var(--gold2);
+      border-bottom: 2px solid var(--gold2);
+      transform: rotate(45deg);
+      animation: arrowBounce 1.4s infinite;
+    }
+
+    @keyframes arrowBounce {
+      0%, 100% { transform: rotate(45deg) translateY(0); opacity: 1; }
+      50%       { transform: rotate(45deg) translateY(6px); opacity: 0.5; }
+    }
+
+    /* ─── SECTION HELPERS ───────────────────────────────── */
+    section { padding: 90px 6%; }
+
+    .section-label {
+      font-size: 0.75rem;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      color: var(--brown);
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+
+    .section-divider {
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--gold), var(--gold2));
+      border-radius: 2px;
+      margin-bottom: 30px;
+    }
+
+    /* ─── STORY ─────────────────────────────────────────── */
+    #story {
+      background: var(--warm);
+      position: relative;
+      overflow: hidden;
+    }
+
+    #story::before {
+      content: '❋';
+      position: absolute;
+      right: 5%;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 18rem;
+      color: rgba(200,146,42,0.07);
+      pointer-events: none;
+    }
+
+    .story-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .story-text p {
+      font-size: 1.05rem;
+      line-height: 1.9;
+      color: #4a3020;
+      margin-bottom: 18px;
+    }
+
+    .story-img-wrap {
+      position: relative;
+    }
+
+    .story-img-wrap img {
+      width: 100%;
+      border-radius: var(--radius);
+      box-shadow: 0 20px 60px rgba(90,45,12,0.25);
+      object-fit: cover;
+      height: 400px;
+    }
+
+    .story-badge {
+      position: absolute;
+      bottom: -18px;
+      right: -18px;
+      background: var(--brown);
+      color: var(--gold2);
+      font-family: 'Playfair Display', serif;
+      font-size: 0.95rem;
+      padding: 16px 22px;
+      border-radius: var(--radius);
+      text-align: center;
+      box-shadow: 0 8px 30px rgba(42,20,6,0.3);
+      line-height: 1.4;
+    }
+
+    /* ─── PRODUCTS ──────────────────────────────────────── */
+    #products {
+      background: var(--cream);
+    }
+
+    .products-header {
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto 60px;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 26px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .product-card {
+      background: #fff;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(90,45,12,0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+      position: relative;
+    }
+
+    .product-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 14px 40px rgba(90,45,12,0.18);
+    }
+
+    .product-img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .product-emoji {
+      width: 100%;
+      height: 180px;
+      background: linear-gradient(135deg, var(--warm), #ffe8c4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+    }
+
+    .product-body {
+      padding: 20px;
+    }
+
+    .product-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      color: var(--brown);
+      margin-bottom: 4px;
+    }
+
+    .product-desc {
+      font-size: 0.85rem;
+      color: #7a5535;
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+
+    .product-price {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--gold), var(--gold2));
+      color: var(--dark);
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 5px 14px;
+      border-radius: 30px;
+    }
+
+    /* ─── SERVICES ──────────────────────────────────────── */
+    #services {
+      background: var(--brown);
+      color: var(--warm);
+    }
+
+    #services .section-title { color: var(--gold2); }
+    #services .section-label { color: var(--gold); }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .service-card {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(200,146,42,0.25);
+      border-radius: var(--radius);
+      padding: 36px 28px;
+      text-align: center;
+      transition: background 0.3s, border-color 0.3s;
+    }
+
+    .service-card:hover {
+      background: rgba(200,146,42,0.12);
+      border-color: var(--gold2);
+    }
+
+    .service-icon { font-size: 3rem; margin-bottom: 16px; }
+
+    .service-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.35rem;
+      color: var(--gold2);
+      margin-bottom: 12px;
+    }
+
+    .service-desc {
+      font-size: 0.92rem;
+      line-height: 1.75;
+      color: rgba(253,246,236,0.85);
+    }
+
+    /* ─── ORDER ─────────────────────────────────────────── */
+    #order {
+      background: var(--warm);
+      text-align: center;
+    }
+
+    .order-box {
+      background: #fff;
+      border-radius: 20px;
+      padding: 50px 40px;
+      max-width: 700px;
+      margin: 0 auto;
+      box-shadow: 0 10px 50px rgba(90,45,12,0.12);
+    }
+
+    .order-form-group {
+      text-align: left;
+      margin-bottom: 20px;
+    }
+
+    .order-form-group label {
+      display: block;
+      font-size: 0.82rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--brown);
+      font-weight: 700;
+      margin-bottom: 7px;
+    }
+
+    .order-form-group input,
+    .order-form-group select,
+    .order-form-group textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid #e0d0b8;
+      border-radius: 10px;
+      font-family: 'Lato', sans-serif;
+      font-size: 0.95rem;
+      background: var(--cream);
+      color: var(--dark);
+      outline: none;
+      transition: border-color 0.25s;
+    }
+
+    .order-form-group input:focus,
+    .order-form-group select:focus,
+    .order-form-group textarea:focus {
+      border-color: var(--gold);
+    }
+
+    .order-form-group textarea { resize: vertical; min-height: 90px; }
+
+    .wa-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--green);
+      color: #fff;
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: 0.5px;
+      padding: 16px 40px;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.25s, box-shadow 0.25s;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+      margin-top: 8px;
+    }
+
+    .wa-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(37,211,102,0.55);
+    }
+
+    .wa-icon {
+      width: 24px;
+      height: 24px;
+      fill: #fff;
+    }
+
+    /* ─── CONTACT / FOOTER ──────────────────────────────── */
+    #contact {
+      background: var(--dark);
+      color: var(--warm);
+      text-align: center;
+      padding: 70px 6% 40px;
+    }
+
+    #contact .section-title { color: var(--gold2); }
+
+    .contact-info {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      margin: 30px 0;
+    }
+
+    .contact-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .contact-item .ci-icon { font-size: 1.6rem; }
+
+    .contact-item .ci-label {
+      font-size: 0.72rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .contact-item .ci-value {
+      font-size: 0.95rem;
+      color: var(--warm);
+    }
+
+    .footer-line {
+      border-top: 1px solid rgba(200,146,42,0.2);
+      padding-top: 28px;
+      margin-top: 40px;
+      font-size: 0.8rem;
+      color: rgba(253,246,236,0.4);
+      letter-spacing: 1px;
+    }
+
+    /* ─── RESPONSIVE ────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .story-grid { grid-template-columns: 1fr; }
+      .story-badge { right: 0; }
+      .nav-links { display: none; }
+      .order-box { padding: 36px 22px; }
+      #hero { padding-top: 100px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ░░░ SPLASH SCREEN ░░░ -->
+  <div id="splash">
+    <div class="splash-candy-row">
+      <div class="candy-dot"></div>
+      <div class="candy-dot"></div>
+      <div class="candy-dot"></div>
+      <div class="candy-dot"></div>
+      <div class="candy-dot"></div>
+    </div>
+    <div class="splash-logo">Nana Maidala's<br>Candy</div>
+    <div class="splash-sub">Jama'are · Bauchi State</div>
+    <div class="splash-bar"></div>
+  </div>
+
+  <!-- ░░░ NAVBAR ░░░ -->
+  <nav>
+    <a href="#hero" class="nav-brand">Nana Maidala's Candy</a>
+    <ul class="nav-links">
+      <li><a href="#story">Our Story</a></li>
+      <li><a href="#products">Products</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#order">Order</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- ░░░ HERO ░░░ -->
+  <section id="hero">
+    <p class="hero-tag">Handcrafted with Love · Since Generations</p>
+    <h1 class="hero-title">
+      Nana Maidala's<br><span>Candy</span>
+    </h1>
+    <p class="hero-motto">
+      "Where every sweet tells a story — crafted by hand, seasoned with tradition."
+    </p>
+    <div class="hero-cta-row">
+      <a href="#products" class="btn-primary">Explore Our Sweets</a>
+      <a href="#order" class="btn-outline">Order Now</a>
+    </div>
+    <div class="scroll-hint">
+      <span>Scroll</span>
+      <div class="scroll-arrow"></div>
+    </div>
+  </section>
+
+  <!-- ░░░ STORY ░░░ -->
+  <section id="story">
+    <div class="story-grid">
+      <div class="story-text">
+        <p class="section-label">Our Heritage</p>
+        <h2 class="section-title">A Sweet Story from Jama'are</h2>
+        <div class="section-divider"></div>
+        <p>
+          Nestled in the heart of <strong>Jama'are Local Government, Bauchi State</strong>,
+          Nana Maidala's Candy was born from a grandmother's kitchen and a community's
+          love for authentic Northern Nigerian flavors. Every candy is handcrafted using
+          time-honored recipes passed down through generations.
+        </p>
+        <p>
+          From the rich creamy goodness of <em>Tuwon Madara</em> to the satisfying crunch
+          of <em>Gullisuwa</em>, each treat carries the warmth of our land and the hands
+          that made it. We use only the finest local ingredients — freshly harvested
+          groundnuts, pure tiger nuts, and the best peanuts from our community's farms.
+        </p>
+        <p>
+          Today, Nana Maidala's Candy serves families across the region — bringing joy
+          at weddings, parties, and everyday moments. Taste the tradition. Share the love.
+        </p>
+      </div>
+      <div class="story-img-wrap">
+        <img
+          src="Jamaare.jpeg"
+          alt="Handcrafted Nigerian candy"
+        />
+        <div class="story-badge">
+          🍬 Handcrafted<br>in Jama'are<br>Bauchi State
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ░░░ PRODUCTS ░░░ -->
+  <section id="products">
+    <div class="products-header">
+      <p class="section-label">What We Make</p>
+      <h2 class="section-title">Our Signature Sweets</h2>
+      <div class="section-divider" style="margin: 0 auto 20px;"></div>
+      <p style="color:#7a5535; font-size:0.95rem; line-height:1.7;">
+        Every product is priced at <strong>₦500 per cup</strong>. Bulk &amp; special
+        event orders are available — inquire via WhatsApp for custom packages.
+      </p>
+    </div>
+
+    <div class="products-grid">
+
+      <!-- Gullisuwa -->
+      <div class="product-card">
+        <img
+          class="product-img"
+          src="gullisuwa.jpg"
+          alt="Gullisuwa"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+        />
+        <div class="product-emoji" style="display:none;">🍯</div>
+        <div class="product-body">
+          <div class="product-name">Gullisuwa</div>
+          <p class="product-desc">
+            Classic Northern Nigerian groundnut candy — crispy, caramel-coated
+            peanuts that melt with every bite.
+          </p>
+          <span class="product-price">₦500 / cup</span>
+        </div>
+      </div>
+
+      <!-- Tuwon Madara -->
+      <div class="product-card">
+        <img
+          class="product-img"
+          src="tuwon_madara.jpg"
+          alt="Tuwon Madara"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+        />
+        <div class="product-emoji" style="display:none;">🥛</div>
+        <div class="product-body">
+          <div class="product-name">Tuwon Madara</div>
+          <p class="product-desc">
+            Smooth, creamy milk candy — a nostalgic Hausa delicacy with a rich
+            milky sweetness loved by all ages.
+          </p>
+          <span class="product-price">₦500 / cup</span>
+        </div>
+      </div>
+
+      <!-- Peanut -->
+      <div class="product-card">
+        <img
+          class="product-img"
+          src="peanuts.jpg"
+          alt="Peanut (Gyada)"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+        />
+        <div class="product-emoji" style="display:none;">🥜</div>
+        <div class="product-body">
+          <div class="product-name">Peanut (Gyada)</div>
+          <p class="product-desc">
+            Freshly roasted and seasoned peanuts — a beloved local snack,
+            simple, wholesome, and irresistibly crunchy.
+          </p>
+          <span class="product-price">₦500 / cup</span>
+        </div>
+      </div>
+
+      <!-- Aya -->
+      <div class="product-card">
+        <img
+          class="product-img"
+          src="aya.jpg"
+          alt="Tiger Nut Aya"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+        />
+        <div class="product-emoji" style="display:none;">🌰</div>
+        <div class="product-body">
+          <div class="product-name">Aya (Tiger Nut)</div>
+          <p class="product-desc">
+            Naturally sweet tiger nuts — nutritious, earthy, and satisfying.
+            A true Northern Nigerian gem.
+          </p>
+          <span class="product-price">₦500 / cup</span>
+        </div>
+      </div>
+
+      <!-- Elloka -->
+      <div class="product-card">
+        <img
+          class="product-img"
+          src="Elloka.jpg"
+          alt="Elloka"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+        />
+        <div class="product-emoji" style="display:none;">🌿</div>
+        <div class="product-body">
+          <div class="product-name">Elloka</div>
+          <p class="product-desc">
+            A traditional local sweet — uniquely flavored with herbs and natural
+            ingredients for a distinctive Northern taste.
+          </p>
+          <span class="product-price">₦500 / cup</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ░░░ SERVICES ░░░ -->
+  <section id="services">
+    <div style="text-align:center; max-width:600px; margin:0 auto 60px;">
+      <p class="section-label">What We Offer</p>
+      <h2 class="section-title">Special Packages</h2>
+      <div class="section-divider" style="margin:0 auto;"></div>
+    </div>
+
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon">💍</div>
+        <div class="service-title">Wedding Gift Packages</div>
+        <p class="service-desc">
+          Make your special day sweeter with our beautifully arranged candy
+          gift packs. Perfect as guest souvenirs, table treats, or traditional
+          Hantsi gifts. Fully customizable to match your wedding theme and colors.
+          Message us on WhatsApp to discuss your needs.
+        </p>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon">🎉</div>
+        <div class="service-title">Party &amp; Ceremony Packages</div>
+        <p class="service-desc">
+          Birthdays, naming ceremonies, graduations, and more. We supply
+          bulk candy arrangements and party-ready treat packs that delight
+          every guest. Available in custom quantities — no order is too big
+          for us. Contact us for special pricing.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ░░░ ORDER ░░░ -->
+  <section id="order">
+    <p class="section-label" style="text-align:center;">Place Your Order</p>
+    <h2 class="section-title" style="text-align:center;">Order via WhatsApp</h2>
+    <div class="section-divider" style="margin:0 auto 40px;"></div>
+
+    <div class="order-box">
+      <p style="color:#7a5535; margin-bottom:28px; line-height:1.7; font-size:0.95rem;">
+        Fill in your details below and tap the button — your order will be sent
+        directly as a stylish WhatsApp message to us. We'll confirm within minutes! 🍬
+      </p>
+
+      <div class="order-form-group">
+        <label>Your Name</label>
+        <input type="text" id="cName" placeholder="e.g. Salihu Abdulmumin" />
+      </div>
+
+      <div class="order-form-group">
+        <label>Product(s) to Order</label>
+        <select id="cProduct">
+          <option value="">— Select a product —</option>
+          <option value="Gullisuwa">Gullisuwa – ₦500/cup</option>
+          <option value="Tuwon Madara">Tuwon Madara – ₦500/cup</option>
+          <option value="Peanut (Gyada)">Peanut (Gyada) – ₦500/cup</option>
+          <option value="Aya (Tiger Nut)">Aya (Tiger Nut) – ₦500/cup</option>
+          <option value="Elloka">Elloka – ₦500/cup</option>
+          <option value="Wedding Gift Package">💍 Wedding Gift Package (Bulk)</option>
+          <option value="Party &amp; Ceremony Package">🎉 Party &amp; Ceremony Package (Bulk)</option>
+        </select>
+      </div>
+
+      <div class="order-form-group">
+        <label>Quantity / Notes</label>
+        <textarea id="cNote" placeholder="e.g. 10 cups of Gullisuwa, or describe your event package needs..."></textarea>
+      </div>
+
+      <div style="text-align:center;">
+        <button class="wa-btn" onclick="sendWhatsApp()">
+          <svg class="wa-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+          </svg>
+          Send Order on WhatsApp
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ░░░ CONTACT / FOOTER ░░░ -->
+  <section id="contact">
+    <p class="section-label">Find Us</p>
+    <h2 class="section-title">Visit or Contact Us</h2>
+    <div class="section-divider" style="margin:0 auto 10px;"></div>
+
+    <div class="contact-info">
+      <div class="contact-item">
+        <span class="ci-icon">📍</span>
+        <span class="ci-label">Address</span>
+        <span class="ci-value">Mai Dalan Jama'are Resident,</span>
+        <span class="ci-value">Jama'are LGA, Bauchi State</span>
+      </div>
+      <div class="contact-item">
+        <span class="ci-icon">📱</span>
+        <span class="ci-label">WhatsApp / Phone</span>
+        <span class="ci-value">+234 811 765 8559</span>
+      </div>
+      <div class="contact-item">
+        <span class="ci-icon">🕐</span>
+        <span class="ci-label">Hours</span>
+        <span class="ci-value">Daily · 8:00 AM – 8:00 PM</span>
+      </div>
+    </div>
+
+    <a
+      href="https://wa.me/2348117658559?text=Assalamu+Alaikum!+I%27d+like+to+reach+Nana+Maidala%27s+Candy+%F0%9F%8D%AC"
+      class="wa-btn"
+      target="_blank"
+      style="margin:10px auto; display:inline-flex;"
+    >
+      <svg class="wa-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+      </svg>
+      Chat With Us on WhatsApp
+    </a>
+
+    <div class="footer-line">
+      &copy; 2025 Nana Maidala's Candy · Jama'are, Bauchi State, Nigeria
+      · All Rights Reserved
+    </div>
+  </section>
+
+  <!-- ░░░ JAVASCRIPT ░░░ -->
+  <script>
+    /* ── Splash hide after 2.8s ── */
+    window.addEventListener('load', function () {
+      setTimeout(function () {
+        document.getElementById('splash').classList.add('hide');
+      }, 2800);
+    });
+
+    /* ── WhatsApp order builder ── */
+    function sendWhatsApp() {
+      var name    = document.getElementById('cName').value.trim();
+      var product = document.getElementById('cProduct').value;
+      var note    = document.getElementById('cNote').value.trim();
+
+      if (!name || !product) {
+        alert('Please fill in your name and select a product.');
+        return;
+      }
+
+      var isBulk = product.includes('Package');
+      var priceNote = isBulk
+        ? 'Bulk / special package – price to be confirmed.'
+        : 'Price: \u20a6500 per cup.';
+
+      var msg =
+        '\uD83C\uDF6C *NANA MAIDALA\'S CANDY \u2014 NEW ORDER* \uD83C\uDF6C\n' +
+        '\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n' +
+        '\uD83D\uDC64 *Name:* ' + name + '\n' +
+        '\uD83D\uDED2 *Product:* ' + product + '\n' +
+        (note ? '\uD83D\uDCDD *Notes:* ' + note + '\n' : '') +
+        '\uD83D\uDCB0 *' + priceNote + '*\n' +
+        '\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n' +
+        (isBulk
+          ? '\u2139\uFE0F Kindly provide further details about your event so we can prepare the best package for you!\n'
+          : '') +
+        '\uD83D\uDCCD *Pickup / Delivery:* Mai Dalan Jama\'are, Bauchi State\n' +
+        '\n_Sent via NanaMaidala.com_';
+
+      var url = 'https://wa.me/2348117658559?text=' + encodeURIComponent(msg);
+      window.open(url, '_blank');
+    }
+  </script>
+
+</body>
+</html>
